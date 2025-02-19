@@ -18,7 +18,7 @@ const Contact = () => {
 
   const uploadFile = (e) =>{
     e.preventDefault();
-   axios.post("http://localhost:3000/upload", {file:fileUpload})
+   axios.post("https://project-1-backend-9424.onrender.com/upload", {file:fileUpload})
    .then((response)=>{
     setImage(response.data.response.image);
     

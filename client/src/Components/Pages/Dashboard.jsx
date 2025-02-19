@@ -33,7 +33,7 @@ const Dashboard = () => {
       return;
     }
 
-    axios.post("http://localhost:3000/verifytoken", { token: tokenToBeVerified })
+    axios.post("https://project-1-backend-9424.onrender.com/verifytoken", { token: tokenToBeVerified })
       .then((response) => {
         const decoded = response.data.decoded;
         if (!decoded || decoded.exp < Math.floor(Date.now() / 1000)) {

@@ -40,7 +40,7 @@ const SignUp = () => {
             setEmail('')
         console.log(dataOne);
 
-        axios.post("http://localhost:3000/signup", dataOne)
+        axios.post("https://project-1-backend-9424.onrender.com/signup", dataOne)
         .then((res)=>{
             if(res.data){
                 console.log(res.data);

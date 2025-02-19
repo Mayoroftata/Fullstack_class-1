@@ -30,7 +30,7 @@ const Signik = () => {
     //         // studentData.append('image', values.image)
     //         console.log(values)
     //         resetForm()
-    //         // axios.post("http://localhost:3000/signup", values)
+    //         // axios.post("https://project-1-backend-9424.onrender.com/signup", values)
     //     }
     // })
   return (

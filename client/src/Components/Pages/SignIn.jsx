@@ -32,7 +32,7 @@ const SignIn = () => {
             let dataTwo = {email, password}
             setEmail('');
             setPassword('');
-            axios.post("http://localhost:3000/login", dataTwo)
+            axios.post("https://project-1-backend-9424.onrender.com/login", dataTwo)
             .then((res)=>{
                 let token  = res.data.token;
                 localStorage.setItem("token", JSON.stringify(token))
