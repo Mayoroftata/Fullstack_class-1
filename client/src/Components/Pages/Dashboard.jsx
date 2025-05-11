@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import UserNavBar from '../UserNavBar'
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -8,13 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
   const navigate = useNavigate(); // Hook for navigation
 
-  useEffect(() => {
- verifyToken()
- const interval = setInterval(verifyToken, 6000);
- return () => clearInterval(interval)
-  },[navigate])
-
-  const verifyToken = () => {
+  const verifyToken = useCallback(() => {
     const storedToken = localStorage.getItem("token");
     
     if (!storedToken) {
@@ -47,7 +41,11 @@ const Dashboard = () => {
         localStorage.removeItem("token");
         navigate("/signin");
       });
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    verifyToken();
+  }, [verifyToken]);
   
   return (
     <div>

@@ -16,6 +16,8 @@ const SignIn = () => {
     
 
         if (email=="" || password=="") {
+            console.log("enter your detail");
+            
             toast.warn('😔 Enter your details!', {
                 position: "top-right",
                 autoClose: 3000,
