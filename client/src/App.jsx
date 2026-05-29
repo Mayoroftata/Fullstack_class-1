@@ -1,13 +1,12 @@
 
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import Dashboard from './Components/Pages/Dashboard'
-import SignUp from './Components/Pages/SignUp'
-import SignIn from './Components/Pages/SignIn'
-import About from './Components/Pages/About'
-import Contact from './Components/Pages/Contact'
-import LandingPage from './Components/Pages/LandingPage'
-import Signik from './Components/Pages/Signik'
+import Dashboard from './Pages/Dashboard'
+import SignUp from './Pages/SignUp'
+import SignIn from './Pages/SignIn'
+import About from './Pages/About'
+import Contact from './Pages/Contact'
+import LandingPage from './Pages/LandingPage'
 
 
 function App() {
@@ -21,7 +20,6 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/about" element={<About/>} />
       <Route path="/contact" element={<Contact/>} />
-      <Route path="/formik" element={<Signik/>} />
       </Routes>
     </>
   )

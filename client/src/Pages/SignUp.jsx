@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
-import Loader from '../Loader';
+import Loader from '../Components/Loader';
 
 const SignUp = () => {
     const [surName, setSurName] = useState("");

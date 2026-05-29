@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import NavBar from '../NavBar'
+import { useState } from 'react'
+import NavBar from '../Components/NavBar'
 import axios from 'axios'
 
 const Contact = () => {

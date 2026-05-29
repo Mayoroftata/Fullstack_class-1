@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-import UserNavBar from '../UserNavBar';
+import UserNavBar from '../Components/UserNavBar';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
@@ -49,7 +49,7 @@ const Dashboard = () => {
             <UserNavBar />
 
             {/* Hero Section */}
-            <section className="hero-section py-5" style={{ 
+            <section className="hero-section py-5" style={{
                 backgroundImage: "url('https://via.placeholder.com/1920x1080?text=Tech+Background')",
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -72,7 +72,7 @@ const Dashboard = () => {
                                 Welcome back, <span className="text-warning">Makinde</span>!
                             </h1>
                             <p className="lead fs-4 mb-5">
-                                Empowering your tech vision with cutting-edge solutions. 
+                                Empowering your tech vision with cutting-edge solutions.
                                 Let&apos;s build something amazing today.
                             </p>
                             <div className="d-flex justify-content-center gap-3">
