@@ -1,4 +1,4 @@
-const {studentModel, imageModel} = require("../model/user.model");
+const {userModel, imageModel} = require("../model/user.model");
 
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -21,7 +21,7 @@ cloudinary.config({
 
 const signup = (req, res) => {
   const { surName, lastName, userName, email, password } = req.body;
-  let user = new studentModel({
+  let user = new userModel({
     firstName: surName,
     lastName,
     userName,
@@ -39,7 +39,7 @@ const signup = (req, res) => {
 
 const login = (req, res) => {
   const { email, password } = req.body;
-  studentModel
+  userModel
     .findOne({ email })
     .then((result) => {
       bcrypt.compare(password, result.password).then((goodToGo) => {
@@ -84,4 +84,3 @@ const uploadFile = (req, res) => {
 };
 
 module.exports = { signup, login, verifyToken, uploadFile };
-//  { email: 'anonymou@gmail.com', iat: 1739443071, exp: 1739446671 }

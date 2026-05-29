@@ -14,7 +14,7 @@ mongoose.connect(uri)
 })
 
 
-let studentSchema = mongoose.Schema({
+let userSchema = mongoose.Schema({
     firstName: {type: String, required: true},
     lastName: {type: String, required: true},
     userName: {type: String, required: true},
@@ -27,7 +27,7 @@ let studentImage = mongoose.Schema({
     student: { type: mongoose.Schema.Types.ObjectId, ref: "student" }
 })
 
-studentSchema.pre("save", function(next){
+userSchema.pre("save", function(next){
     bcrypt.hash(this.password, 10, ((err, hash)=>{
         this.password = hash
         next()
@@ -36,7 +36,7 @@ studentSchema.pre("save", function(next){
 })
 
 
-let studentModel = mongoose.model("student", studentSchema)
+let userModel = mongoose.model("user", userSchema)
 let imageModel = mongoose.model("file", studentImage)
 
-module.exports = {studentModel, imageModel}
+module.exports = {userModel, imageModel}
