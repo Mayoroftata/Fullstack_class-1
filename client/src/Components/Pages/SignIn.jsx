@@ -1,120 +1,155 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import "react-toastify/ReactToastify.css";
-import { ToastContainer,  toast } from "react-toastify";
+import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
-
+import { useState } from 'react';
+import Loader from '../Loader';
 
 const SignIn = () => {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState('')
-     const navigate = useNavigate();
-     const [msg, setMsg] = useState("")
-
-    const submit = (e) => {
-        e.preventDefault();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
     
+    const navigate = useNavigate();
 
-        if (email=="" || password=="") {
-            console.log("enter your detail");
-            
-            toast.warn('😔 Enter your details!', {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!email || !password) {
+            toast.warn('Please enter your email and password!', {
                 position: "top-right",
                 autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
                 theme: "dark",
-                // transition: Bounce,
-                });
-        } else {
-
-            let dataTwo = {email, password}
-            setEmail('');
-            setPassword('');
-            axios.post("https://project-1-backend-9424.onrender.com/login", dataTwo)
-            .then((res)=>{
-                let token  = res.data.token;
-                localStorage.setItem("token", JSON.stringify(token))
-                
-                setMsg(res.data.message)
-                toast.success(msg, {
-                    position: "top-right",
-                    autoClose: 3000,
-                    hideProgressBar: false,
-                    closeOnClick: false,
-                    pauseOnHover: false,
-                    draggable: false,
-                    progress: undefined,
-                    theme: "dark",
-                    // transition: Bounce,
-                    });
-                    setTimeout(() => {
-                        navigate("/dashboard")
-                    }, 3000);
-            })
-        // if (user) {
-  
-            
-        //     setTimeout(() => {
-        //         navigate('/dashboard'); // Navigate to the login page after a delay
-        //       }, 3000);
-        //   } else {
-        //     toast.warn('😔 Invalid username or password!', {
-        //                 position: "top-right",
-        //                 autoClose: 3000,
-        //                 hideProgressBar: false,
-        //                 closeOnClick: false,
-        //                 pauseOnHover: true,
-        //                 draggable: true,
-        //                 progress: undefined,
-        //                 theme: "dark",
-        //                 // transition: Bounce,
-        //                 });
-        //   }
+            });
+            return;
         }
-        
-    }
-  return (
-    <div>
-        <section class="container">
-            <div class="row">
-                <div class="col d-none d-lg-block d-sm-none d-md-none"></div>
-                <div class="col py-5">
-                    <h3 class="text-center py-2">Account Log in</h3>
-                    <div>
-                        <form class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="text" class="form-control py-3" onChange={(e)=>setEmail(e.target.value)} value={email} required></input>
 
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control py-3" onChange={(e)=>setPassword(e.target.value)} value={password} required></input>
+        setLoading(true);
 
-                            <div class="my-4">
-                                <button type="button" class="btn btn-1 rounded-pill btn-primary w-100 fw-bold py-2" onClick={submit}>Log in</button>
+        try {
+            const data = { email, password };
+
+            const res = await axios.post(
+                "https://project-1-backend-9424.onrender.com/login",
+                data
+            );
+
+            const token = res.data.token;
+            localStorage.setItem("token", token); // Store as string (recommended)
+
+            toast.success(res.data.message || "Login successful!", {
+                position: "top-right",
+                autoClose: 2500,
+                theme: "dark",
+            });
+
+            // Navigate after showing success message
+            setTimeout(() => {
+                navigate("/dashboard");
+            }, 2000);
+
+        } catch (err) {
+            const errorMsg = err.response?.data?.message || "Invalid email or password";
+            toast.error(errorMsg, {
+                position: "top-right",
+                autoClose: 4000,
+                theme: "dark",
+            });
+        } finally {
+            setLoading(true);
+        }
+    };
+
+    return (
+        <>
+            {loading && <Loader />}
+            <div className="row justify-content-center">
+                {/* Left empty column for large screens */}
+                <div className="col-lg-4 d-none d-lg-block"></div>
+
+                {/* Main Form Column */}
+                <div className="col-lg-4 col-md-8 col-12">
+                    <div className="card shadow-sm border-0">
+                        <div className="card-body p-4 p-lg-5">
+                            <h3 className="text-center mb-4 fw-bold">Account Log in</h3>
+
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-3">
+                                    <label htmlFor="email" className="form-label fw-medium">
+                                        Email Address
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        className="form-control py-3"
+                                        placeholder="Enter your email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="mb-4">
+                                    <label htmlFor="password" className="form-label fw-medium">
+                                        Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        className="form-control py-3"
+                                        placeholder="Enter your password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary w-100 py-3 fw-bold rounded-pill"
+                                    disabled={loading}
+                                >
+                                    {loading ? "Logging in..." : "Log In"}
+                                </button>
+                            </form>
+
+                            {/* Keep me logged in */}
+                            <div className="d-flex align-items-center gap-2 mt-4">
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="rememberMe"
+                                />
+                                <label className="form-check-label" htmlFor="rememberMe">
+                                    Keep me logged in
+                                </label>
                             </div>
-                        </form>
-                        
-                        <div class="py-4 text-center">
-                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1"></input>
-                            <label class="form-check-label" for="defaultCheck1">
-                            Keep me logged in
-                            </label>
-                        </div>
-                        <div class="text-center text-dark anchor">
-                            <p><a href="#" class="text-dark a-1">Forgotten password/ email</a></p>
-                            <p>Don't have an account? <Link to="/signup" class="text-dark a-1">Sign up</Link></p>
+
+                            {/* Links */}
+                            <div className="text-center mt-4">
+                                <p>
+                                    <a href="#" className="text-decoration-none text-primary">
+                                        Forgot password?
+                                    </a>
+                                </p>
+                                <p className="mb-0">
+                                    Don`&apos;t have an account?{" "}
+                                    <Link to="/signup" className="text-decoration-none fw-medium text-primary">
+                                        Sign up
+                                    </Link>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col d-none d-lg-block d-sm-none d-md-none"></div>
-            </div>
-        </section>
-        <ToastContainer/>
-    </div>
-  )
-}
 
-export default SignIn
+                {/* Right empty column */}
+                <div className="col-lg-4 d-none d-lg-block"></div>
+            </div>
+
+            <ToastContainer />
+        </>
+    );
+};
+
+export default SignIn;

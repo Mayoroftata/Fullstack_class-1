@@ -1,150 +1,221 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import "react-toastify/ReactToastify.css";
-import { ToastContainer,  toast } from "react-toastify";
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 import axios from 'axios';
-
+import Loader from '../Loader';
 
 const SignUp = () => {
-    const [surName, setSurName] = useState("")
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [userName, setUserName] = useState("")
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [msg, setMsg] = useState("")
-    const navigate = useNavigate(); // Hook for navigation
+    const [surName, setSurName] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [userName, setUserName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const submit = (e) => {
-        e.preventDefault()
-        if (surName=="" || firstName=="" || lastName=="" || email=="" || password=="") {
-            toast.warn('😔 Enter the necessary information!', {
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!surName || !firstName || !lastName || !email || !password) {
+            toast.warn('Please fill in all required fields!', {
                 position: "top-right",
                 autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
                 theme: "dark",
-                // transition: Bounce,
-                });
-        }else{
-            
-            let dataOne = {surName, firstName, lastName, userName, email, password}
-            setUserName('');
-            setPassword('');
-            setSurName('');
-            setFirstName('')
-            setLastName('')
-            setEmail('')
-        console.log(dataOne);
-
-        axios.post("https://project-1-backend-9424.onrender.com/signup", dataOne)
-        .then((res)=>{
-            if(res.data){
-                console.log(res.data);
-                
-                setMsg(res.data.message)
-                toast.success(msg, {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-                // transition: Bounce,
-                });
-                setTimeout(() => {
-                    navigate('/signin')
-                }, 3000);
-            }
-            
-        })
-        .catch((err)=>{console.error(err)})
-        
-        
-        // const users = JSON.parse(localStorage.getItem('users')) || [];
-        // const userExists = users.find((user) => user.userName === userName || user.email === email);
-
-    // if (userExists) {
-     
-      
-    //   return;
-    // }
-
-
-
-    // Add the new user to local storage
-    // users.push({ userName, password });
-    // localStorage.setItem('users', JSON.stringify(users));
-
-    // Clear form fields and error message
-  
-    // toast.success('👍SignUp successful, you can now proceed to sign in!', {
-    //     position: "top-right",
-    //     autoClose: 3000,
-    //     hideProgressBar: false,
-    //     closeOnClick: false,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "dark",
-    //     // transition: Bounce,
-    //     });
-
+            });
+            return;
         }
-        
-  };
 
-  return (
-    <div>
-        <section class="container">
-            <div class="row">
-                <div class="col d-none d-lg-block d-sm-none d-md-none"></div>
-                <div class="col py-5">
-                    <h3 class="text-center py-2">Create Account</h3>
-                    <div>
-                        <form class="mb-3">
-                            <label for="Surname" class="form-label">Surname</label>
-                            <input type="text" class="form-control py-3" name='surName'onChange={(e)=>setSurName(e.target.value)} value={surName} required></input>
+        setLoading(true);
 
-                            <label for="FirstName" class="form-label">First Name</label>
-                            <input type="text" class="form-control py-3" name='firstName' onChange={(e)=>setFirstName(e.target.value)} value={firstName} required></input>
+        try {
+            const data = { surName, firstName, lastName, userName, email, password };
 
-                            <label for="LastName" class="form-label">Last Name</label>
-                            <input type="text" class="form-control py-3" name='lastName' onChange={(e)=>setLastName(e.target.value)} value={lastName} required></input>
+            const res = await axios.post(
+                "https://project-1-backend-9424.onrender.com/signup",
+                data
+            );
 
-                            <label for="username" class="form-label">Choose a Username</label>
-                            <input type="text" class="form-control py-3" name='userName' onChange={(e)=>setUserName(e.target.value)} value={userName} required></input>
+            toast.success(res.data.message || "Account created successfully!", {
+                position: "top-right",
+                autoClose: 2500,
+                theme: "dark",
+            });
 
-                            <label for="username" class="form-label">Enter your Email Address</label>
-                            <input type="email" class="form-control py-3" name='email' onChange={(e)=>setEmail(e.target.value)} value={email} required></input>
+            // Clear form after successful signup
+            setSurName("");
+            setFirstName("");
+            setLastName("");
+            setUserName("");
+            setEmail("");
+            setPassword("");
 
-                            <label for="password" class="form-label">Choose a password</label>
-                            <input type="password" class="form-control py-3" name='password' onChange={(e)=>setPassword(e.target.value)} value={password} required></input>
-                        </form>
-                        <div class="py-2 text-center"></div>
-                            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1"></input>
-                            <label class="form-check-label pb-3" for="defaultCheck1">
-                            I agree to <a href="#" class="a-2">Term of use</a>
-                            </label>
+            // Redirect to signin after delay
+            setTimeout(() => {
+                navigate('/signin');
+            }, 2000);
+
+        } catch (err) {
+            const errorMsg = err.response?.data?.message || "Registration failed. Please try again.";
+            toast.error(errorMsg, {
+                position: "top-right",
+                autoClose: 4000,
+                theme: "dark",
+            });
+        } finally {
+            setLoading(true);
+        }
+    };
+
+    return (
+        <div className="container py-5">
+            {loading && <Loader />}
+            <div className="row justify-content-center">
+                {/* Empty column for large screens */}
+                <div className="col-lg-3 d-none d-lg-block"></div>
+
+                {/* Main Form */}
+                <div className="col-lg-6 col-md-9 col-12">
+                    <div className="card shadow-sm border-0">
+                        <div className="card-body p-4 p-lg-5">
+                            <h3 className="text-center mb-4 fw-bold">Create Account</h3>
+
+                            <form onSubmit={handleSubmit}>
+                                <div className="row g-3">
+                                    <div className="col-md-6">
+                                        <label htmlFor="surName" className="form-label fw-medium">
+                                            Surname
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="surName"
+                                            className="form-control py-3"
+                                            placeholder="Surname"
+                                            value={surName}
+                                            onChange={(e) => setSurName(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="col-md-6">
+                                        <label htmlFor="firstName" className="form-label fw-medium">
+                                            First Name
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="firstName"
+                                            className="form-control py-3"
+                                            placeholder="First Name"
+                                            value={firstName}
+                                            onChange={(e) => setFirstName(e.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="mb-3 mt-2">
+                                    <label htmlFor="lastName" className="form-label fw-medium">
+                                        Last Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="lastName"
+                                        className="form-control py-3"
+                                        placeholder="Last Name"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="userName" className="form-label fw-medium">
+                                        Choose a Username
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="userName"
+                                        className="form-control py-3"
+                                        placeholder="Username"
+                                        value={userName}
+                                        onChange={(e) => setUserName(e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="mb-3">
+                                    <label htmlFor="email" className="form-label fw-medium">
+                                        Email Address
+                                    </label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        className="form-control py-3"
+                                        placeholder="Enter your email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="mb-4">
+                                    <label htmlFor="password" className="form-label fw-medium">
+                                        Choose a Password
+                                    </label>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        className="form-control py-3"
+                                        placeholder="Create a strong password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                    />
+                                </div>
+
+                                {/* Terms Checkbox */}
+                                <div className="d-flex align-items-center gap-2 mb-4">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id="terms"
+                                        required
+                                    />
+                                    <label className="form-check-label" htmlFor="terms">
+                                        I agree to the <a href="#" className="text-decoration-none text-primary">Terms of Use</a>
+                                    </label>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary w-100 py-3 fw-bold rounded-pill"
+                                    disabled={loading}
+                                >
+                                    {loading ? "Creating Account..." : "Create Account"}
+                                </button>
+                            </form>
+
+                            {/* Login Link */}
+                            <div className="text-center mt-4">
+                                <p className="mb-0">
+                                    Already have an account?{" "}
+                                    <Link to="/signin" className="text-decoration-none fw-medium text-primary">
+                                        Sign in
+                                    </Link>
+                                </p>
+                            </div>
                         </div>
-                        <div>
-                            <button type="button" class="btn btn-1 rounded-pill btn-primary w-100 fw-bold py-2" onClick={submit}>Create account</button>
-                        </div>
-                        <div class="text-center text-dark anchor py-5">
-                            <p>Already have an account? <Link to='/signin' class="text-dark a-1">Sign in</Link></p>
-                        </div>
+                    </div>
                 </div>
-                <div class="col d-none d-lg-block d-sm-none d-md-none"></div>
-            </div>
-        </section>
-        <ToastContainer/>
-    </div>
-  )
-}
 
-export default SignUp
+                {/* Empty column */}
+                <div className="col-lg-3 d-none d-lg-block"></div>
+            </div>
+
+            <ToastContainer />
+        </div>
+    );
+};
+
+export default SignUp;
