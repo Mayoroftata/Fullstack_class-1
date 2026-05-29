@@ -20,6 +20,7 @@ cloudinary.config({
 
 
 const signup = (req, res) => {
+  console.log("Signup request received with body:", req.body);
   const { surName, lastName, userName, email, password } = req.body;
   let user = new userModel({
     firstName: surName,
@@ -38,6 +39,7 @@ const signup = (req, res) => {
 };
 
 const login = (req, res) => {
+  console.log("Login request received with body:", req.body);
   const { email, password } = req.body;
   userModel
     .findOne({ email })
