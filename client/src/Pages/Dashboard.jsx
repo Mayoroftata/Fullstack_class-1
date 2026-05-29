@@ -20,9 +20,7 @@ const Dashboard = () => {
         try {
             tokenToBeVerified = JSON.parse(storedToken);
         } catch {
-            localStorage.removeItem("token");
-            navigate("/signin");
-            return;
+            tokenToBeVerified = storedToken;
         }
 
         axios.post("https://project-1-backend-9424.onrender.com/verifytoken", { token: tokenToBeVerified })

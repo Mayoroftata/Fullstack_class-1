@@ -35,7 +35,7 @@ const SignIn = () => {
             );
 
             const token = res.data.token;
-            localStorage.setItem("token", token); // Store as string (recommended)
+            localStorage.setItem("token", JSON.stringify(token));
 
             toast.success(res.data.message || "Login successful!", {
                 position: "top-right",
@@ -43,8 +43,8 @@ const SignIn = () => {
                 theme: "dark",
             });
 
-            // Navigate after showing success message
             setTimeout(() => {
+                setLoading(false);
                 navigate("/dashboard");
             }, 2000);
 
@@ -55,8 +55,9 @@ const SignIn = () => {
                 autoClose: 4000,
                 theme: "dark",
             });
+            setLoading(false);
         } finally {
-            setLoading(true);
+            setLoading(false);
         }
     };
 
